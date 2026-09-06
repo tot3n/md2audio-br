@@ -1,24 +1,16 @@
 #!/usr/bin/env bash
-# ============================================================
-# md2audio-br - Converte arquivos Markdown em audiobooks (MP3)
-# usando vozes neurais da Microsoft (edge-tts). Foco em pt-BR.
-#
+
 # Uso:
 #   md2audio                  # processa os .md da pasta atual
 #   md2audio ~/pasta          # processa os .md da pasta indicada
 #   md2audio arquivo.md       # processa UM arquivo apenas
-#
-# Requisitos: edge-tts (Python), pandoc, ffmpeg
-# ============================================================
 
 INPUT="${1:-.}"
 VOICE="pt-BR-ThalitaMultilingualNeural"
 RATE="+20%"    # velocidade da fala: +20% = 1.2x | +25% = 1.25x | +0% = normal
 CHARS_POR_PEDACO=1800   # tamanho de cada pedaço de texto (~3 min de audio)
 
-# ------------------------------------------------------------
 # Localiza o edge-tts
-# ------------------------------------------------------------
 EDGE_TTS="${MD2AUDIO_EDGE:-}"
 if [ -z "$EDGE_TTS" ]; then
     for candidato in "$HOME/md2audio/bin/edge-tts" "$HOME/.venvs/md2audio/bin/edge-tts" "$HOME/venvs/md2audio/bin/edge-tts"; do
@@ -44,9 +36,7 @@ fi
 echo "Usando edge-tts: $EDGE_TTS"
 echo "Voz: $VOICE | Velocidade: $RATE"
 
-# ------------------------------------------------------------
 # Resolve o alvo: arquivo unico ou diretorio
-# ------------------------------------------------------------
 if [ -f "$INPUT" ] && [[ "$INPUT" == *.md ]]; then
     ARQUIVOS=("$INPUT")
     OUTPUT_DIR="$(cd "$(dirname "$INPUT")" && pwd)/audio_books"
@@ -71,9 +61,7 @@ echo "Saida: $OUTPUT_DIR"
 echo "Arquivos a processar: $TOTAL"
 echo "=========================================="
 
-# ------------------------------------------------------------
 # UI: barra com percentual real (por pedaço gerado)
-# ------------------------------------------------------------
 barra() {  # barra <atual> <total>
     local atual=$1 total=$2
     local pct preenchido vazio i
@@ -94,9 +82,8 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# ------------------------------------------------------------
+
 # Converte UM arquivo .md em MP3 (com progresso por pedaço)
-# ------------------------------------------------------------
 converter_arquivo() {
     local file=$1 output_mp3=$2
     local tmp_txt="$TMP_DIR/texto.txt"
@@ -180,9 +167,7 @@ print(len(pedacos))
     fi
 }
 
-# ------------------------------------------------------------
 # Loop principal
-# ------------------------------------------------------------
 concluidos=0
 for file in "${ARQUIVOS[@]}"; do
     filename=$(basename "$file")
