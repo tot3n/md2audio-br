@@ -1,20 +1,20 @@
-# md2audio-br 🎧🇧🇷
+# md2audio-br 🇧🇷
 
 Converte arquivos **Markdown em audiobooks (MP3)** usando vozes neurais da Microsoft (edge-tts). Feito para ouvir textos técnicos — como módulos de cursos — enquanto faz outra coisa. **Foco em português do Brasil.**
 
 > O sufixo `-br` reflete o diferencial: voz neural brasileira (Thalita) e documentação em pt-BR.
 
-## ✨ Funcionalidades
+## Funcionalidades
 
-- 📄 Processa todos os `.md` de uma pasta automaticamente (ordem cronológica)
-- 🗣️ Voz neural **pt-BR-ThalitaMultilingualNeural** (lê siglas e termos em inglês com naturalidade)
-- 📖 Junta linhas soltas de parágrafos — o TTS lê de forma fluida, sem "engasgos"
-- 📁 Gera os MP3 em uma subpasta `audio_books/`
-- 🔤 Funciona com acentuação e UTF-8 normalmente
+• Processa todos os `.md` de uma pasta automaticamente (ordem cronológica)
+• Voz neural **pt-BR-ThalitaMultilingualNeural** (lê siglas e termos em inglês com naturalidade)
+• Junta linhas soltas de parágrafos — o TTS lê de forma fluida, sem "engasgos"
+• Gera os MP3 em uma subpasta `audio_books/`
+• Funciona com acentuação e UTF-8 normalmente
 
-## 📋 Requisitos
+## Requisitos
 
-- Linux (testado no Ubuntu)
+- Linux (Nativo para Ubuntu)
 - [edge-tts](https://github.com/rany2/edge-tts) (Python)
 - [pandoc](https://pandoc.org/) (conversão MD → texto)
 - [ffmpeg](https://ffmpeg.org/) (concatenação das partes de áudio)
@@ -32,7 +32,7 @@ deactivate
 sudo apt install pandoc ffmpeg
 ```
 
-## 🚀 Instalação do script
+## Instalação do script
 
 ```bash
 # Copia o script para uma pasta do PATH
@@ -42,7 +42,7 @@ sudo chmod +x /usr/local/bin/md2audio
 
 > O script localiza o `edge-tts` automaticamente em `~/md2audio/bin/edge-tts` (o venv criado acima) — não precisa ativar o venv manualmente.
 
-## 💻 Uso
+## Como Usar
 
 ```bash
 # Processa todos os .md da pasta atual (ordem cronológica)
@@ -57,7 +57,7 @@ md2audio ~/Documentos/cursos/Modulo5_PT-BR.md
 # Saída: os MP3 ficam em <pasta>/audio_books/
 ```
 
-## 📊 Progresso
+## Progresso
 
 - O texto de cada arquivo é dividido em **partes de ~1800 caracteres** (~3 min de áudio cada)
 - A barra mostra o **progresso real**: cada parte concluída avança o percentual (14% → 28% → ... → 100%)
@@ -65,7 +65,7 @@ md2audio ~/Documentos/cursos/Modulo5_PT-BR.md
 
 > Bônus da divisão em partes: arquivos muito longos não estouram o limite do edge-tts, e se uma parte falhar, apenas ela é regerada.
 
-## ⚙️ Personalização
+## Personalização
 
 Edite as variáveis no topo do script:
 
@@ -86,12 +86,12 @@ edge-tts --list-voices | grep pt-BR
 - `pt-BR-FranciscaNeural` (feminina)
 - `pt-BR-ThalitaMultilingualNeural` (feminina, multilíngue — recomendada)
 
-## 🛠️ Como funciona
+## Como funciona
 
 1. `pandoc` converte o Markdown para texto puro
 2. Um pré-processamento em Python junta as linhas soltas de cada parágrafo (quebras de linha viram espaços; parágrafos `\n\n` são preservados)
 3. `edge-tts` gera o MP3 com o texto contínuo
 
-## 📄 Licença
+## Licença
 
 MIT — use, modifique e compartilhe à vontade.
