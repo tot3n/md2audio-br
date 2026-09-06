@@ -82,7 +82,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-
 # Converte UM arquivo .md em MP3 (com progresso por pedaço)
 converter_arquivo() {
     local file=$1 output_mp3=$2
@@ -138,24 +137,29 @@ print(len(pedacos))
     num_pedacos=$(cat "$TMP_DIR/num_pedacos.txt")
     echo "  ($num_pedacos partes de ~$CHARS_POR_PEDACO chars)"
 
-    # 4. Gera o audio de cada pedaço, atualizando a barra (progresso REAL)
+    # 4. Gera o audio de cada pedaço, atualizando UMA barra unica no lugar
     local lista_mp3="$TMP_DIR/lista.txt"
     : > "$lista_mp3"
     local i=0
+    local qtd_pedacos=$num_pedacos
     for parte in "$TMP_DIR"/pedacos/parte_*.txt; do
         i=$((i + 1))
         local parte_mp3="${parte%.txt}.mp3"
         "$EDGE_TTS" --voice "$VOICE" --rate "$RATE" -f "$parte" --write-media "$parte_mp3" 2>/dev/null
         if [ $? -eq 0 ] && [ -f "$parte_mp3" ]; then
-            printf "\r  " 
-            barra "$i" "$num_pedacos"
-            echo "  parte $i/$num_pedacos"
+            # redesenha a MESMA linha (sem \n) - barra + percentual + parte atual
+            printf "\r  "
+            barra "$i" "$qtd_pedacos"
+            printf "  parte %d/%d  %s" "$i" "$qtd_pedacos" "$(basename "$output_mp3")"
             echo "file '$parte_mp3'" >> "$lista_mp3"
         else
-            echo "  ✗ FALHA na parte $i/$num_pedacos de $filename"
+            printf "\r  \033[K"
+            echo "  ✗ FALHA na parte $i/$qtd_pedacos de $filename"
             return 1
         fi
     done
+    # linha final limpa (cursor para a linha de baixo)
+    printf "\n"
 
     # 5. Concatena os MP3s
     ffmpeg -y -f concat -safe 0 -i "$lista_mp3" -c copy "$output_mp3" 2>/dev/null
